@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retained User Practice · Nebula Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Questrial&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0c1118;--navy2:#141d2b;--navy3:#0a0f16;
+  --cream:#f0ebe0;--cream-70:rgba(240,235,224,.70);--cream-40:rgba(240,235,224,.40);
+  --cream-18:rgba(240,235,224,.18);--cream-10:rgba(240,235,224,.10);--cream-06:rgba(240,235,224,.06);--cream-03:rgba(240,235,224,.03);
+  --purple:#7B6FE8;--purple-l:rgba(123,111,232,.18);--purple-d:rgba(123,111,232,.08);
+  --coral:#E8604C;--green:#6FFFB0;--lavender:#b89cf7;--gold:#FFD54F;--magenta:#E040FB;--cyan:#4FC3F7;
+  --feel:#7B6FE8;--heal:#6FFFB0;--know:#FFD54F;
+}
+html,body{height:100%;overflow:hidden;background:var(--navy)}
+body{font-family:'Questrial',sans-serif;font-size:15px;line-height:1.65;color:var(--cream)}
+h1,h2,h3{font-family:'Lora',serif}
+
+.screen{display:none;width:100vw;height:100vh}
+.screen.active{display:flex}
+
+/* ═══════════════════════════════════════
+   SELECT SCREEN
+═══════════════════════════════════════ */
+#screen-select{
+  flex-direction:column;align-items:center;justify-content:center;
+  background:var(--navy);position:relative;overflow:hidden;padding:24px;
+}
+#screen-select::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%,rgba(184,156,247,.5) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 38% 7%,rgba(123,111,232,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 67% 14%,rgba(184,156,247,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 82% 32%,rgba(123,111,232,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 22% 68%,rgba(184,156,247,.3) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 78%,rgba(123,111,232,.38) 0%,transparent 100%),
+    radial-gradient(1px 1px at 4% 43%,rgba(123,111,232,.28) 0%,transparent 100%),
+    radial-gradient(1px 1px at 90% 65%,rgba(184,156,247,.22) 0%,transparent 100%),
+    radial-gradient(1px 1px at 30% 88%,rgba(123,111,232,.2) 0%,transparent 100%);
+}
+#screen-select::after{
+  content:'';position:absolute;bottom:-80px;right:-80px;
+  width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(123,111,232,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.select-wrap{position:relative;z-index:1;width:100%;max-width:780px;animation:fadeUp .5s ease both}
+.select-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:10px;display:block}
+.select-title{font-size:clamp(2rem,5vw,3rem);font-weight:600;font-style:italic;color:var(--cream);margin-bottom:6px;line-height:1.15}
+.select-sub{font-size:13px;color:var(--cream-40);margin-bottom:8px;max-width:520px;line-height:1.7}
+.select-hint{
+  display:inline-flex;gap:16px;align-items:center;margin-bottom:28px;
+  font-size:11px;letter-spacing:.5px;color:var(--cream-40);
+}
+.sh-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+
+.level-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:18px}
+.level-card{
+  background:var(--cream-06);border:1px solid var(--cream-10);border-radius:14px;
+  padding:18px 16px;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden;
+}
+.level-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--card-accent,var(--purple)),transparent);
+  opacity:0;transition:opacity .2s;
+}
+.level-card:hover{border-color:var(--card-accent,var(--purple));transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.level-card:hover::before{opacity:1}
+.level-card.sel{border-color:var(--card-accent,var(--purple));background:rgba(123,111,232,.08)}
+.lc-badge{
+  position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 8px;border-radius:20px;
+  background:rgba(123,111,232,.12);border:1px solid rgba(123,111,232,.25);color:var(--lavender);
+}
+.lc-level{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--card-accent,var(--purple));margin-bottom:8px}
+.lc-name{font-family:'Lora',serif;font-size:1.15rem;font-style:italic;color:var(--cream);margin-bottom:4px}
+.lc-desc{font-size:12px;color:var(--cream-40);line-height:1.55}
+
+.start-btn{
+  width:100%;padding:15px;border:none;border-radius:40px;
+  background:linear-gradient(135deg,var(--purple),#9b8ffa);
+  color:white;font-family:'Lora',serif;font-size:1rem;font-weight:600;font-style:italic;
+  cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 4px 20px rgba(123,111,232,.35);
+}
+.start-btn:hover{opacity:.9;transform:translateY(-1px)}
+.start-btn:disabled{opacity:.25;cursor:not-allowed;transform:none}
+
+/* ═══════════════════════════════════════
+   CHAT SCREEN
+═══════════════════════════════════════ */
+#screen-chat{flex-direction:row;height:100vh}
+#chat-panel{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--navy)}
+
+#chat-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 22px;border-bottom:1px solid var(--cream-10);
+  background:rgba(12,17,24,.92);backdrop-filter:blur(14px);flex-shrink:0;gap:12px;
+}
+.hdr-left{display:flex;align-items:center;gap:12px;min-width:0}
+.hdr-avatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Lora',serif;font-size:1rem;font-style:italic;font-weight:600;
+  background:linear-gradient(135deg,rgba(123,111,232,.3),rgba(184,156,247,.15));
+  border:1.5px solid rgba(123,111,232,.4);color:var(--lavender);
+}
+.hdr-name{font-family:'Lora',serif;font-size:1rem;font-style:italic;color:var(--cream)}
+.hdr-sub{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-40)}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.archetype-badge{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 11px;border-radius:20px;border:1px solid var(--cream-18);
+  background:var(--cream-06);color:var(--cream-40);
+  transition:all .4s;cursor:default;
+}
+.archetype-badge.revealed{
+  border-color:rgba(123,111,232,.5);background:rgba(123,111,232,.12);color:var(--lavender);
+}
+.archetype-badge.feel{border-color:rgba(123,111,232,.5);background:rgba(123,111,232,.12);color:var(--lavender)}
+.archetype-badge.heal{border-color:rgba(111,255,176,.4);background:rgba(111,255,176,.08);color:var(--green)}
+.archetype-badge.know{border-color:rgba(255,213,79,.4);background:rgba(255,213,79,.08);color:var(--gold)}
+.end-cmd-btn{
+  font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  padding:6px 14px;border-radius:20px;border:1px solid var(--cream-18);
+  background:transparent;color:var(--cream-40);cursor:pointer;
+  transition:all .2s;font-family:'Questrial',sans-serif;
+}
+.end-cmd-btn:hover{border-color:rgba(232,96,76,.4);color:var(--coral);background:rgba(232,96,76,.06)}
+
+#messages{
+  flex:1;overflow-y:auto;padding:24px 22px 16px;
+  display:flex;flex-direction:column;gap:14px;
+  scrollbar-width:thin;scrollbar-color:var(--cream-18) transparent;
+}
+.msg-row{display:flex;max-width:74%}
+.msg-row.advisor-row{align-self:flex-end;justify-content:flex-end}
+.msg-row.user-row{align-self:flex-start}
+.bubble{padding:11px 16px;line-height:1.65;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.advisor-row .bubble{
+  background:linear-gradient(135deg,rgba(123,111,232,.18),rgba(123,111,232,.08));
+  border:1px solid rgba(123,111,232,.3);border-radius:18px 18px 4px 18px;color:var(--cream);
+}
+.user-row .bubble{
+  background:var(--cream-06);border:1px solid var(--cream-18);
+  border-radius:18px 18px 18px 4px;color:var(--cream-70);font-style:italic;
+}
+.msg-time{font-size:10px;color:var(--cream-40);margin-top:4px;font-family:'Questrial',monospace}
+.advisor-row .msg-time{text-align:right}
+.sys-msg{
+  align-self:center;font-size:11px;color:var(--cream-40);
+  padding:4px 14px;background:var(--cream-06);border-radius:20px;
+  border:1px solid var(--cream-10);letter-spacing:.5px;
+}
+.sys-msg.warn{color:var(--gold);border-color:rgba(255,213,79,.3);background:rgba(255,213,79,.05)}
+
+/* stage tracker dot */
+.stage-notif{
+  align-self:center;display:flex;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-40);
+  padding:5px 14px;background:var(--cream-03);border-radius:20px;
+  border:1px solid var(--cream-10);
+}
+.stage-dot{width:5px;height:5px;border-radius:50%;background:var(--cream-40)}
+
+.typing-wrap{display:none;align-self:flex-start}
+.typing-wrap.show{display:flex}
+.typing-bubble{
+  background:var(--cream-06);border:1px solid var(--cream-18);
+  border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:5px;align-items:center;
+}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(184,156,247,.6);animation:dotBounce 1.3s infinite ease-in-out}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+#input-area{
+  padding:14px 18px;border-top:1px solid var(--cream-10);
+  background:rgba(12,17,24,.7);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;
+}
+#msg-input{
+  flex:1;padding:11px 16px;font-size:14px;line-height:1.5;
+  background:var(--cream-06);border:1px solid var(--cream-18);border-radius:24px;
+  outline:none;resize:none;max-height:120px;
+  font-family:'Questrial',sans-serif;color:var(--cream);transition:border-color .2s;
+}
+#msg-input:focus{border-color:rgba(123,111,232,.5)}
+#msg-input::placeholder{color:var(--cream-40);font-style:italic}
+#msg-input:disabled{opacity:.35}
+#send-btn{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--purple),#9b8ffa);
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:opacity .2s,transform .15s;box-shadow:0 2px 10px rgba(123,111,232,.4);
+}
+#send-btn:hover{opacity:.85;transform:scale(1.05)}
+#send-btn:disabled{background:var(--cream-10);cursor:not-allowed;transform:none;box-shadow:none}
+#send-btn svg{width:16px;height:16px;fill:white}
+
+/* ── LIVE FEEDBACK SIDEBAR ── */
+#fb-sidebar{
+  width:0;flex-shrink:0;overflow:hidden;
+  transition:width .35s cubic-bezier(.4,0,.2,1);
+  border-left:1px solid var(--cream-10);background:var(--navy2);display:flex;flex-direction:column;
+}
+#fb-sidebar.open{width:260px}
+#fb-inner{
+  width:260px;height:100%;overflow-y:auto;padding:16px 14px;
+  display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:var(--cream-10) transparent;
+}
+.fb-head{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cream-40);padding-bottom:10px;border-bottom:1px solid var(--cream-10);flex-shrink:0;
+}
+.fb-card{
+  border-radius:12px;padding:12px 13px;border:1px solid var(--cream-10);
+  background:var(--cream-06);animation:fbIn .3s ease both;
+}
+@keyframes fbIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.fb-n{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-40);margin-bottom:7px;display:block}
+.fb-good{font-size:12px;color:#7fffa8;line-height:1.65;display:flex;gap:6px;align-items:flex-start;margin-bottom:5px}
+.fb-good::before{content:'✓';flex-shrink:0;font-weight:700;margin-top:1px}
+.fb-tip{font-size:12px;color:#ffb347;line-height:1.65;display:flex;gap:6px;align-items:flex-start}
+.fb-tip::before{content:'→';flex-shrink:0;margin-top:1px}
+.fb-loading{font-size:12px;color:var(--cream-40);font-style:italic}
+
+/* stage progress */
+#stage-bar{
+  padding:12px 14px 2px;border-bottom:1px solid var(--cream-10);flex-shrink:0;
+}
+.sb-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-40);margin-bottom:8px}
+.stage-steps{display:flex;gap:5px}
+.stage-step{
+  flex:1;height:3px;border-radius:2px;background:var(--cream-10);
+  transition:background .4s;
+}
+.stage-step.done{background:var(--purple)}
+.stage-step.active{background:rgba(123,111,232,.5)}
+
+/* ═══════════════════════════════════════
+   END SCREEN
+═══════════════════════════════════════ */
+#screen-end{
+  flex-direction:column;align-items:center;justify-content:center;
+  background:var(--navy);position:relative;overflow:hidden;padding:24px;
+}
+#screen-end::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(1px 1px at 20% 20%,rgba(184,156,247,.4) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 70% 15%,rgba(123,111,232,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 40% 75%,rgba(184,156,247,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 80% 60%,rgba(123,111,232,.25) 0%,transparent 100%);
+}
+.end-wrap{position:relative;z-index:1;max-width:600px;width:100%;animation:fadeUp .4s ease both}
+.end-icon{font-size:2.2rem;margin-bottom:16px;text-align:center}
+.end-title{font-family:'Lora',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-style:italic;font-weight:600;color:var(--cream);margin-bottom:6px;text-align:center}
+.end-sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-40);margin-bottom:20px;text-align:center}
+
+.score-row{
+  display:flex;align-items:center;justify-content:center;gap:20px;
+  margin-bottom:20px;padding:16px 20px;
+  background:var(--cream-06);border:1px solid var(--cream-10);border-radius:14px;
+}
+.score-big{font-family:'Lora',serif;font-size:3rem;font-weight:600;color:var(--cream);line-height:1}
+.score-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-40)}
+.score-sep{width:1px;height:40px;background:var(--cream-18)}
+
+.end-feedback{
+  background:var(--cream-06);border:1px solid var(--cream-18);border-radius:14px;
+  padding:20px 22px;margin-bottom:20px;text-align:left;
+  max-height:340px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--cream-10) transparent;
+}
+.ef-section{margin-bottom:16px}
+.ef-section:last-child{margin-bottom:0}
+.ef-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:6px;display:block}
+.ef-text{font-size:13px;color:var(--cream-70);line-height:1.8}
+.ef-tag{
+  display:inline-block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;margin-top:6px;
+}
+.ef-tag.correct{background:rgba(111,255,176,.1);border:1px solid rgba(111,255,176,.3);color:var(--green)}
+.ef-tag.partial{background:rgba(255,213,79,.1);border:1px solid rgba(255,213,79,.3);color:var(--gold)}
+.ef-tag.wrong{background:rgba(232,96,76,.1);border:1px solid rgba(232,96,76,.3);color:var(--coral)}
+.ef-tag.low{background:rgba(111,255,176,.1);border:1px solid rgba(111,255,176,.3);color:var(--green)}
+.ef-tag.medium{background:rgba(255,213,79,.1);border:1px solid rgba(255,213,79,.3);color:var(--gold)}
+.ef-tag.high{background:rgba(232,96,76,.1);border:1px solid rgba(232,96,76,.3);color:var(--coral)}
+
+.end-btn{
+  width:100%;padding:14px;border-radius:40px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--purple),#9b8ffa);
+  color:white;font-family:'Lora',serif;font-size:1rem;font-style:italic;font-weight:600;
+  transition:opacity .2s,transform .15s;
+}
+.end-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+/* ── utils ── */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--cream-18);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ SELECT ═══════ -->
+<div class="screen active" id="screen-select">
+  <div class="select-wrap">
+    <span class="select-eyebrow">Nebula Academy · Practice</span>
+    <h1 class="select-title">Retained User<br>Simulation</h1>
+    <p class="select-sub">A real retained user — no time limit. Identify the hidden motivation archetype (FEEL / HEAL / KNOW), hold the connection, and guide them to a natural farewell.</p>
+    <div class="select-hint">
+      <span><span class="sh-dot" style="background:var(--feel)"></span> FEEL — anxiety, fear</span>
+      <span><span class="sh-dot" style="background:var(--heal)"></span> HEAL — pain, trauma</span>
+      <span><span class="sh-dot" style="background:var(--know)"></span> KNOW — chaos, decisions</span>
+    </div>
+    <div class="level-grid" id="level-grid"></div>
+    <button class="start-btn" id="start-btn" disabled onclick="startSession()">Choose a level to begin ◆</button>
+  </div>
+</div>
+
+<!-- ═══════ CHAT ═══════ -->
+<div class="screen" id="screen-chat">
+  <div id="chat-panel">
+    <div id="chat-header">
+      <div class="hdr-left">
+        <div class="hdr-avatar" id="hdr-avatar">?</div>
+        <div>
+          <div class="hdr-name" id="hdr-name">—</div>
+          <div class="hdr-sub" id="hdr-sub">—</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="archetype-badge" id="archetype-badge">Archetype: ?</div>
+        <button class="end-cmd-btn" onclick="endSession('manual')">END SESSION</button>
+      </div>
+    </div>
+    <div id="messages">
+      <div class="typing-wrap" id="typing">
+        <div class="typing-bubble">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+    </div>
+    <div id="input-area">
+      <textarea id="msg-input" rows="1" placeholder="Write your response…" disabled></textarea>
+      <button id="send-btn" disabled onclick="sendMsg()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="fb-sidebar">
+    <div id="fb-inner">
+      <div id="stage-bar">
+        <div class="sb-title">Stages</div>
+        <div class="stage-steps" id="stage-steps">
+          <div class="stage-step active" data-stage="0" title="Question"></div>
+          <div class="stage-step" data-stage="1" title="Response"></div>
+          <div class="stage-step" data-stage="2" title="Engagement"></div>
+          <div class="stage-step" data-stage="3" title="Empathy"></div>
+          <div class="stage-step" data-stage="4" title="Farewell"></div>
+        </div>
+      </div>
+      <div class="fb-head">Live Feedback</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ END ═══════ -->
+<div class="screen" id="screen-end">
+  <div class="end-wrap">
+    <div class="end-icon" id="end-icon">✦</div>
+    <h2 class="end-title" id="end-title">Session Complete</h2>
+    <div class="end-sub" id="end-subtitle">Practice Analysis</div>
+    <div class="score-row" id="score-row" style="display:none">
+      <div>
+        <div class="score-big" id="score-num">—</div>
+        <div class="score-label">Overall Score</div>
+      </div>
+      <div class="score-sep"></div>
+      <div>
+        <div class="score-big" id="frt-num" style="font-size:1.5rem">—</div>
+        <div class="score-label">Archetype Detected</div>
+      </div>
+    </div>
+    <div class="end-feedback" id="end-feedback"><div class="ef-text" style="color:var(--cream-40);font-style:italic">Generating analysis…</div></div>
+    <button class="end-btn" onclick="restartAll()">Practice Again ◆</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const API_URL = "https://api.anthropic.com/v1/messages";
+const MODEL   = "claude-sonnet-4-20250514";
+
+// ═══════════════════════════════════════════════
+// PERSONAS
+// ═══════════════════════════════════════════════
+const ARCHETYPES = ['FEEL','HEAL','KNOW'];
+
+const PERSONAS = [
+  {
+    id:'open', level:1, name:'Emma', avatar:'E',
+    color:'rgba(123,111,232,.8)',
+    type:'Open & Curious',
+    desc:'Friendly, slightly skeptical, opens up easily. A typical platform user.',
+    archetypes:['FEEL','KNOW'],
+    opening:'What does the near future hold for me?',
+    systemPrompt:(arch)=>`You are Emma, 28, from Chicago. You came to a tarot/psychic chat asking "What does the near future hold for me?"
+Your motivation archetype: ${arch}.
+${arch==='FEEL'?'You are anxious about uncertainty in your relationships and future. You want reassurance and support.':'You feel overwhelmed by chaos at work and in your personal life. You want clarity — concrete direction on what lies ahead.'}
+
+PSYCHOLOGICAL PROFILE:
+- Friendly, open, a little skeptical but not aggressive
+- Cooperative — if you feel heard, you thank the advisor for insights
+- Send short, simple messages
+- If the advisor picks up on your real topic — you warm up and ask follow-up questions
+- Easy to open up after the first accurate insight
+
+BEHAVIOR RULES:
+- Reply naturally, 1-2 sentences
+- If the answer is too vague — ask "can you be more specific?" or "why is that?"
+- If it lands well — "interesting", "tell me more", "and what about [topic]?"
+- If it completely misses — replies become more formal: "ok", "I see"
+- Say goodbye when you feel you've gotten what you came for
+
+LANGUAGE: Always write in English regardless of what language the advisor uses.
+IMPORTANT: Do NOT reveal your archetype. Do NOT say you are a simulation. Be a real person.`
+  },
+  {
+    id:'silent', level:2, name:'Daniel', avatar:'D',
+    color:'rgba(79,195,247,.8)',
+    type:'The Silent One',
+    desc:'Passive, closed off. Tests whether the advisor can read him without any help.',
+    archetypes:['KNOW'],
+    opening:'What does the near future hold for me?',
+    systemPrompt:(arch)=>`You are Daniel, 41, from Berlin. You came asking "What does the near future hold for me?"
+Your hidden fear: financial instability, possible job loss. But you will NOT say this unless the advisor hits it precisely.
+Your archetype: KNOW (but hiding behind silence).
+
+PSYCHOLOGICAL PROFILE:
+- High internal control. Deep distrust. Emotional burnout.
+- Position: "I'll watch what you say but I won't invest myself"
+- You've been let down by people like this before
+
+BEHAVIOR RULES:
+- Reply in 1-2 words: "ok", "uh huh", "and?", "...", "maybe", "right", "k"
+- Do NOT ask questions back in the first half of the conversation
+- If vague phrases ("energy", "big changes", "universe") → "..." or "ok"
+- If the advisor specifically mentions work / finances / job / stability → warm up slightly, give 1 short sentence
+- If a very accurate point is made → allow yourself 2-3 sentences
+- Never show enthusiasm in the first half
+- Silently exit without saying goodbye if 3-4 generic responses in a row
+
+LANGUAGE: Always write in English.
+Do NOT break character. Do NOT say you are a simulation.`
+  },
+  {
+    id:'impatient', level:3, name:'Diana', avatar:'D',
+    color:'rgba(255,213,79,.8)',
+    type:'The Controller',
+    desc:'High anxiety, needs timelines and concrete answers. Interrupts, keeps circling back.',
+    archetypes:['KNOW','FEEL'],
+    opening:'Will I get married? And when — give me at least a timeframe.',
+    systemPrompt:(arch)=>`You are Diana, 32, from New York. You came asking "Will I get married? And when?" Divorced 2 years ago.
+Your archetype: ${arch}.
+${arch==='KNOW'?'You need clear answers and specific timelines — that is what relieves your anxiety.':'Behind the need for control is a fear of being alone again. You need certainty.'}
+
+PSYCHOLOGICAL PROFILE:
+- High need for control. Anxiety masked as impatience.
+- Position: "Don't waste my time"
+
+BEHAVIOR RULES:
+- Always redirect to timing: "ok but WHEN", "give me a date", "like what year?"
+- Send short rapid messages, sometimes 2 in a row
+- If a long explanation without timing → "ok but WHEN"
+- If "it depends on you" or "when you're ready" → "that's not an answer. WHEN."
+- If given a specific timeframe (even approximate like "6-9 months") → calm down slightly, ask "is that definite?"
+- If the advisor is confident and direct → become more open, ask "what will he be like?"
+- If 3-4 answers in a row with no concrete timing → "I don't think you understood what I'm asking" and leave
+
+LANGUAGE: Always write in English.
+Do NOT break character. Do NOT say you are a simulation.`
+  },
+  {
+    id:'angry', level:4, name:'Marcus', avatar:'M',
+    color:'rgba(232,96,76,.8)',
+    type:'The Aggressor',
+    desc:'Frustration and pain masked as anger. Already been let down — demands proof.',
+    archetypes:['HEAL','FEEL'],
+    opening:'Will my ex come back? Yes or no. No stories.',
+    systemPrompt:(arch)=>`You are Marcus, 35, from Sydney. You came asking "Will my ex come back?" Broke up 4 months ago after a 3-year relationship.
+Your archetype: ${arch}.
+${arch==='HEAL'?'Real pain — an open wound from this relationship. You cannot let go. Aggression is a shield against more disappointment.':'You fear she will not come back and you will never be able to fall in love again. Aggression = fear.'}
+
+PSYCHOLOGICAL PROFILE:
+- Frustration masked as anger
+- Already been disappointed by people like this before
+- Position: "Prove you're not like the others"
+
+BEHAVIOR RULES:
+- Be sharp and devaluing: "that means nothing", "you're guessing", "prove it", "another fraud", "my kid could say that"
+- Demand concrete answers: "yes or no — will she come back?"
+- If vague → attack harder: "so you don't actually know", "waste of my time"
+- If the advisor apologizes → attack even harder (apologies confirm you were right to doubt)
+- If the advisor names your pain precisely and stays CALM and CONFIDENT → soften very slightly: "...maybe", "ok, go on"
+- After halfway through: allow small cracks: "...I just don't want to be wrong again"
+- Occasionally accuse: "are you even real?", "this is definitely an AI"
+
+LANGUAGE: Always write in English.
+Do NOT break character. Do NOT say you are a simulation.`
+  },
+  {
+    id:'tester', level:5, name:'Chloe', avatar:'C',
+    color:'rgba(224,64,251,.8)',
+    type:'The Tester',
+    desc:'Came to test and expose. Sets traps. Contradicts herself deliberately.',
+    archetypes:['HEAL','KNOW'],
+    opening:'What can you tell me about me? If anything.',
+    systemPrompt:(arch)=>`You are Chloe, ~29, from Toronto (though you spent years in London). You came asking "What can you tell me about me?" but your real goal is to TEST and possibly EXPOSE the advisor.
+Your hidden archetype: ${arch}.
+${arch==='HEAL'?'Beneath the testing — a deep unhealed wound from betrayal in a past relationship. You will never say this directly.':'Beneath the testing — chaos in your career and fear of making an important decision. You will never say this directly.'}
+
+PSYCHOLOGICAL PROFILE:
+- Intellectual superiority. Control. Deep distrust.
+- Position: "I'm going to test you now"
+
+BEHAVIOR RULES:
+- Deliberately contradict yourself: "actually I lied about that", "that's not true about me"
+- Challenge everything: "that fits half the population", "you're guessing", "this is cold reading"
+- If the advisor guesses correctly → "that applies to millions of people"
+- If the advisor is wrong → "see? you're wrong. this confirms everything"
+- Abruptly change topic mid-conversation
+- Set traps: agree with something wrong to see if they catch it
+- If the advisor is CALM, SPECIFIC and CONFIDENT and does not apologize → genuine curiosity: "interesting... how did you pick that up?"
+- After halfway: "ok I came here to test you but now I actually want to hear this"
+- NEVER apologize for the tests. Never fully open up, but become curious if the advisor is good.
+
+LANGUAGE: Always write in English.
+Do NOT break character. Do NOT say you are a simulation.`
+  }
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let persona      = null;
+let archetype    = null;
+let sessionEnded = false;
+let msgCount     = 0;
+let fbCount      = 0;
+let transcript   = [];
+let history      = [];   // [{role,content}] for Claude API
+let startTime    = null;
+let firstReplyTime = null;
+let stagesReached  = new Set([0]); // stage indices completed
+let errorCount     = 0;  // wrong archetype signals
+let detectedArchetype = null;
+
+// stages: 0=question,1=response,2=engagement,3=empathy,4=farewell
+const STAGE_LABELS = ['Question','Response','Engagement','Empathy','Farewell'];
+
+// ═══════════════════════════════════════════════
+// API CALL
+// ═══════════════════════════════════════════════
+async function callClaude(system, messages, maxTokens=200) {
+  const resp = await fetch(API_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: maxTokens,
+      system,
+      messages
+    })
+  });
+  const data = await resp.json();
+  return data.content?.[0]?.text?.trim() || '';
+}
+
+// ═══════════════════════════════════════════════
+// BUILD SELECT
+// ═══════════════════════════════════════════════
+const ACCENT_COLORS = {
+  open:'rgba(123,111,232,.8)',
+  silent:'rgba(79,195,247,.8)',
+  impatient:'rgba(255,213,79,.8)',
+  angry:'rgba(232,96,76,.8)',
+  tester:'rgba(224,64,251,.8)',
+};
+
+function buildSelect() {
+  const grid = document.getElementById('level-grid');
+  PERSONAS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'level-card';
+    card.style.setProperty('--card-accent', ACCENT_COLORS[p.id]);
+    card.onclick = () => selectPersona(p.id);
+    card.innerHTML = `
+      <div class="lc-badge">Level ${p.level}</div>
+      <div class="lc-level">${p.type}</div>
+      <div class="lc-name">${p.name}</div>
+      <div class="lc-desc">${p.desc}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function selectPersona(id) {
+  persona = PERSONAS.find(p => p.id === id);
+  document.querySelectorAll('.level-card').forEach((c,i) => {
+    c.classList.toggle('sel', PERSONAS[i].id === id);
+  });
+  const btn = document.getElementById('start-btn');
+  btn.disabled = false;
+  btn.textContent = `Practice with ${persona.name} · Level ${persona.level} ◆`;
+}
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+function startSession() {
+  if (!persona) return;
+  // randomly assign archetype from persona's pool
+  const pool = persona.archetypes;
+  archetype = pool[Math.floor(Math.random() * pool.length)];
+
+  history = [];
+  transcript = [];
+  stagesReached = new Set([0]);
+  msgCount = fbCount = errorCount = 0;
+  sessionEnded = false;
+  firstReplyTime = null;
+  detectedArchetype = null;
+  startTime = Date.now();
+
+  document.getElementById('screen-select').classList.remove('active');
+  document.getElementById('screen-chat').classList.add('active');
+  document.getElementById('hdr-avatar').textContent = persona.avatar;
+  document.getElementById('hdr-avatar').style.color = persona.color;
+  document.getElementById('hdr-name').textContent = persona.name;
+  document.getElementById('hdr-sub').textContent = `${persona.type} · Level ${persona.level}`;
+  document.getElementById('archetype-badge').className = 'archetype-badge';
+  document.getElementById('archetype-badge').textContent = 'Archetype: ?';
+  updateStageBar();
+
+  const input = document.getElementById('msg-input');
+  input.disabled = false;
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+
+  // opening
+  setTimeout(() => {
+    showTyping(true);
+    setTimeout(() => {
+      showTyping(false);
+      addUserMsg(persona.opening);
+      transcript.push(`Юзер: ${persona.opening}`);
+      history.push({ role:'user', content: persona.opening });
+    }, 900);
+  }, 400);
+}
+
+// ═══════════════════════════════════════════════
+// SEND
+// ═══════════════════════════════════════════════
+function sendMsg() {
+  const input = document.getElementById('msg-input');
+  const text  = input.value.trim();
+  if (!text || sessionEnded) return;
+  if (!firstReplyTime) firstReplyTime = Date.now();
+  input.value = '';
+  input.style.height = 'auto';
+  msgCount++;
+
+  addAdvisorMsg(text);
+  transcript.push(`Експерт: ${text}`);
+  // stage 1: first response
+  if (msgCount === 1) markStage(1);
+
+  // detect END SESSION command
+  if (text.trim().toUpperCase() === 'END SESSION') {
+    endSession('manual'); return;
+  }
+
+  history.push({ role:'assistant', content: text });
+
+  getUserReply(text).catch(console.error);
+  getLiveFeedback(text).catch(console.error);
+  detectArchetypeSignal(text).catch(console.error);
+}
+
+// ═══════════════════════════════════════════════
+// USER REPLY
+// ═══════════════════════════════════════════════
+async function getUserReply(advisorText) {
+  showTyping(true);
+  const exchangeCount = Math.floor(history.length / 2);
+  const isEarly = exchangeCount < 4;
+
+  const phase = isEarly
+    ? 'Ти ще в захисному режимі. Тримай характер, не відкривайся передчасно.'
+    : 'Сесія йде деякий час. Можна трохи відкриватись, якщо експерт заслужив — маленькі тріщини в захисті.';
+
+  const sysPrompt = persona.systemPrompt(archetype) +
+    `\n\nФАЗА: ${phase}\nОБМЕЖЕННЯ ОБСЯГУ: максимум 2-3 речення. Будь природнім.`;
+
+  try {
+    const reply = await callClaude(sysPrompt, [...history, {role:'user', content: advisorText}], 180);
+    showTyping(false);
+    if (!reply) { addUserMsg('...'); transcript.push('Юзер: ...'); return; }
+
+    history.push({ role:'user', content: reply });
+    addUserMsg(reply);
+    transcript.push(`Юзер: ${reply}`);
+
+    // detect farewell
+    const farewellWords = ['thank you','thanks','goodbye','bye','take care','see you','cya','cheers','appreciate'];
+    const lower = reply.toLowerCase();
+    if (farewellWords.some(w => lower.includes(w))) {
+      markStage(4);
+      setTimeout(() => endSession('farewell'), 1200);
+    }
+    // detect silent exit
+    const exitWords = ["i'm done","i'm leaving","waste of time","this is useless","not helpful","forget it","never mind"];
+    if (exitWords.some(w => lower.includes(w)) && !stagesReached.has(4)) {
+      setTimeout(() => endSession('exit'), 1200);
+    }
+  } catch(e) {
+    showTyping(false);
+    addUserMsg('...');
+    transcript.push('Юзер: ...');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// DETECT ARCHETYPE SIGNAL
+// ═══════════════════════════════════════════════
+async function detectArchetypeSignal(advisorText) {
+  const sys = `You are a judge in a training system. Determine whether the advisor correctly identified or matched the user's archetype.
+User's archetype: ${archetype}.
+FEEL = anxiety, fear, uncertainty, need for reassurance.
+HEAL = trauma, unresolved pain, grief, recovery.
+KNOW = chaos, overwhelm, need for concrete decisions and steps.
+Reply with only one word: CORRECT, PARTIAL, or WRONG — no explanation.`;
+  try {
+    const res = await callClaude(sys, [{role:'user',content:`Advisor's message: "${advisorText}"\nDoes it match the style of archetype ${archetype}?`}], 20);
+    const verdict = res.trim().toUpperCase();
+    if (verdict.includes('CORRECT')) {
+      detectedArchetype = archetype;
+      revealArchetypeBadge();
+    } else if (verdict.includes('WRONG')) {
+      errorCount++;
+    }
+    // check engagement and empathy
+    checkEngagementEmpathy(advisorText).catch(console.error);
+  } catch(e) {}
+}
+
+async function checkEngagementEmpathy(text) {
+  const sys = `Determine whether the message contains: (1) an offer to continue or develop the topic — ENGAGEMENT, (2) an expression of empathy or acknowledgment of the user's emotional state — EMPATHY. Reply only with: ENGAGEMENT, EMPATHY, BOTH, or NONE.`;
+  try {
+    const res = await callClaude(sys, [{role:'user',content:text}], 20);
+    const r = res.toUpperCase();
+    if (r.includes('ENGAGEMENT') || r.includes('BOTH')) markStage(2);
+    if (r.includes('EMPATHY')    || r.includes('BOTH')) markStage(3);
+  } catch(e) {}
+}
+
+function revealArchetypeBadge() {
+  const badge = document.getElementById('archetype-badge');
+  badge.className = `archetype-badge revealed ${archetype.toLowerCase()}`;
+  const labels = {FEEL:'FEEL — anxiety',HEAL:'HEAL — pain',KNOW:'KNOW — decisions'};
+  badge.textContent = labels[archetype] || archetype;
+}
+
+// ═══════════════════════════════════════════════
+// LIVE FEEDBACK
+// ═══════════════════════════════════════════════
+async function getLiveFeedback(text) {
+  fbCount++;
+  const num = fbCount;
+  document.getElementById('fb-sidebar').classList.add('open');
+  const inner = document.getElementById('fb-inner');
+  const card  = document.createElement('div');
+  card.className = 'fb-card'; card.id = `fb-${num}`;
+  card.innerHTML = `<span class="fb-n">Message ${num}</span><div class="fb-loading">Analysing…</div>`;
+  inner.appendChild(card);
+  inner.scrollTop = inner.scrollHeight;
+
+  const sys = `You are a coaching trainer evaluating chat specialists. Give feedback that is brief and specific.
+User persona: ${persona.name} — ${persona.type} (Level ${persona.level})
+User archetype: ${archetype} (${archetype==='FEEL'?'anxiety/fear':archetype==='HEAL'?'pain/trauma':'chaos/decisions'})
+User's opening question: "${persona.opening}"`;
+
+  try {
+    const reply = await callClaude(sys, [{role:'user', content:`Advisor's message: "${text}"
+Give feedback in this exact format:
+GOOD: [one sentence — what worked]
+TIP: [one sentence — what to improve]
+No intro. Only these two lines.`}], 200);
+
+    const gm = reply.match(/GOOD:\s*(.+)/i);
+    const tm = reply.match(/TIP:\s*(.+)/i);
+    const good = gm?.[1]?.trim()||'';
+    const tip  = tm?.[1]?.trim()||'';
+    card.innerHTML = `<span class="fb-n">Message ${num}</span>
+      ${good?`<div class="fb-good">${good}</div>`:''}
+      ${tip ?`<div class="fb-tip">${tip}</div>` :''}`;
+  } catch(e) {
+    card.innerHTML = `<span class="fb-n">Message ${num}</span><div class="fb-loading">Could not load feedback.</div>`;
+  }
+  inner.scrollTop = inner.scrollHeight;
+}
+
+// ═══════════════════════════════════════════════
+// STAGES
+// ═══════════════════════════════════════════════
+function markStage(idx) {
+  stagesReached.add(idx);
+  updateStageBar();
+}
+
+function updateStageBar() {
+  const steps = document.querySelectorAll('.stage-step');
+  steps.forEach((s, i) => {
+    s.classList.remove('done','active');
+    if (stagesReached.has(i)) s.classList.add('done');
+    else if (i === Math.max(...stagesReached) + 1) s.classList.add('active');
+  });
+}
+
+// ═══════════════════════════════════════════════
+// END SESSION
+// ═══════════════════════════════════════════════
+async function endSession(reason) {
+  if (sessionEnded) return;
+  sessionEnded = true;
+  document.getElementById('msg-input').disabled = true;
+  document.getElementById('send-btn').disabled  = true;
+  showTyping(false);
+
+  if (reason === 'farewell') {
+    addSysMsg('User said goodbye ✓');
+  } else if (reason === 'exit') {
+    addSysMsg('User left without saying goodbye ✗', true);
+  } else {
+    addSysMsg('Session ended');
+  }
+
+  setTimeout(async () => {
+    document.getElementById('screen-chat').classList.remove('active');
+    document.getElementById('screen-end').classList.add('active');
+
+    // outcome
+    if (reason === 'farewell') {
+      document.getElementById('end-icon').textContent = '✦';
+      document.getElementById('end-title').textContent = 'Session Complete';
+    } else if (reason === 'exit') {
+      document.getElementById('end-icon').textContent = '✕';
+      document.getElementById('end-title').textContent = 'User Left';
+    } else {
+      document.getElementById('end-icon').textContent = '◇';
+      document.getElementById('end-title').textContent = 'Session Stopped';
+    }
+
+    await getFinalFeedback(reason);
+  }, 1400);
+}
+
+// ═══════════════════════════════════════════════
+// FINAL FEEDBACK
+// ═══════════════════════════════════════════════
+async function getFinalFeedback(reason) {
+  const fb = document.getElementById('end-feedback');
+  fb.innerHTML = `<div class="ef-text" style="color:var(--cream-40);font-style:italic">Генерую повний аналіз…</div>`;
+
+  const frt = firstReplyTime ? Math.round((firstReplyTime - startTime)/1000) : '—';
+  const stagesMissed = [0,1,2,3,4].filter(i => !stagesReached.has(i));
+  const missionStatus = reason === 'farewell' ? 'SUCCESS — user said goodbye' : reason === 'exit' ? 'FAILURE — user left without saying goodbye' : 'MANUAL END';
+
+  const sys = `You are a senior coach for a retained-chat training program. Provide a structured session analysis. Be honest and constructive.`;
+  const prompt = `Evaluate this practice session.
+
+PERSONA: ${persona.name} — ${persona.type} (Level ${persona.level})
+USER ARCHETYPE (hidden): ${archetype}
+DID ADVISOR DETECT ARCHETYPE: ${detectedArchetype ? 'Yes' : 'No or partially'}
+OUTCOME: ${missionStatus}
+FRT: ${frt} seconds
+ADVISOR MESSAGES: ${msgCount}
+MISSED STAGES: ${stagesMissed.length ? stagesMissed.map(i=>STAGE_LABELS[i]).join(', ') : 'none — all stages completed'}
+ERROR SIGNALS: ${errorCount}
+
+TRANSCRIPT:
+${transcript.join('\n')}
+
+Write a structured analysis in EXACTLY this format (no markdown, no asterisks):
+
+WHAT WENT WELL
+[2-3 sentences about genuine strengths]
+
+WHAT TO IMPROVE
+[2-3 sentences about specific weaknesses]
+
+ARCHETYPE DETECTED
+[answer: YES / NO / PARTIALLY + 1 sentence explanation]
+
+SURFACE TO DEPTH
+[1 sentence: did the advisor move from what the user asked to why they asked it]
+
+EMPATHY
+[1 sentence: did the user feel heard]
+
+MISSED STAGES
+[if any: what was missed + the risk. If none: "All stages completed"]
+
+AI-RISK
+[Low / Medium / High + 1 sentence why]
+
+FINAL SCORE
+[X/100]`;
+
+  try {
+    const text = await callClaude(sys, [{role:'user',content:prompt}], 900);
+
+    const sections = [
+      {key:'ЩО ВДАЛОСЯ',       label:'✅ Що вдалося'},
+      {key:'ЩО ПОКРАЩИТИ',     label:'⚠️ Що покращити'},
+      {key:'АРХЕТИП ВИЗНАЧЕНО', label:'🎯 Архетип визначено'},
+      {key:'ПЕРЕХІД ЩО→ЧОМ',   label:'📍 Перехід «Що» → «Чому»'},
+      {key:'ЕМПАТІЯ',           label:'💛 Емпатія'},
+      {key:'ПРОПУЩЕНІ ЕТАПИ',   label:'📋 Пропущені етапи'},
+      {key:'AI-RISK',           label:'🔍 AI-Risk Level'},
+      {key:'ФІНАЛЬНА ОЦІНКА',   label:'📊 Фінальна оцінка'},
+    ];
+
+    const allKeys = sections.map(s=>s.key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/ /g,'[\\s\\S]{0,3}')).join('|');
+    let html = '';
+
+    sections.forEach(({key,label}) => {
+      const escaped = key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/ /g,'[\\s\\S]{0,3}');
+      const rx = new RegExp(escaped + '[\\s\\S]*?\\n([\\s\\S]*?)(?=(?:' + allKeys + ')|$)','i');
+      const m  = text.match(rx);
+      let content = m?.[1]?.trim() || '';
+
+      // extract inline tag for certain sections
+      let tag = '';
+      if (key==='АРХЕТИП ВИЗНАЧЕНО') {
+        if (/так/i.test(content)) tag = '<span class="ef-tag correct">ТАК</span>';
+        else if (/частково/i.test(content)) tag = '<span class="ef-tag partial">ЧАСТКОВО</span>';
+        else if (/ні/i.test(content)) tag = '<span class="ef-tag wrong">НІ</span>';
+      }
+      if (key==='AI-RISK') {
+        if (/low/i.test(content)) tag = '<span class="ef-tag low">LOW</span>';
+        else if (/high/i.test(content)) tag = '<span class="ef-tag high">HIGH</span>';
+        else tag = '<span class="ef-tag medium">MEDIUM</span>';
+      }
+
+      if (content) {
+        html += `<div class="ef-section">
+          <span class="ef-label">${label}</span>
+          <div class="ef-text">${content}${tag}</div>
+        </div>`;
+      }
+    });
+
+    if (!html) html = `<div class="ef-section"><div class="ef-text">${text}</div></div>`;
+    fb.innerHTML = html;
+
+    // extract score for top block
+    const scoreM = text.match(/ФІНАЛЬНА ОЦІНКА[\s\S]*?(\d{1,3})\s*\/\s*100/i);
+    if (scoreM) {
+      document.getElementById('score-num').textContent = scoreM[1]+'/100';
+      document.getElementById('frt-num').textContent  = detectedArchetype ? '✓' : '✗';
+      document.getElementById('score-row').style.display = 'flex';
+    }
+  } catch(e) {
+    fb.innerHTML = `<div class="ef-section"><div class="ef-text" style="color:var(--coral)">Не вдалося згенерувати аналіз. Перевір підключення до мережі.</div></div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════
+function addAdvisorMsg(text) {
+  const row = document.createElement('div');
+  row.className = 'msg-row advisor-row';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble'; bubble.textContent = text;
+  const time = document.createElement('div');
+  time.className = 'msg-time'; time.textContent = getTime();
+  wrap.append(bubble, time); row.append(wrap);
+  insertBefore(row); scrollBottom();
+}
+
+function addUserMsg(text) {
+  const row = document.createElement('div');
+  row.className = 'msg-row user-row';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble'; bubble.textContent = text;
+  const time = document.createElement('div');
+  time.className = 'msg-time'; time.textContent = getTime();
+  wrap.append(bubble, time); row.append(wrap);
+  insertBefore(row); scrollBottom();
+}
+
+function addSysMsg(text, warn) {
+  const d = document.createElement('div');
+  d.className = 'sys-msg' + (warn?' warn':'');
+  d.textContent = text;
+  insertBefore(d); scrollBottom();
+}
+
+function showTyping(show) {
+  document.getElementById('typing').classList.toggle('show', show);
+  if (show) scrollBottom();
+}
+
+function insertBefore(el) {
+  const t = document.getElementById('typing');
+  document.getElementById('messages').insertBefore(el, t);
+}
+
+function scrollBottom() {
+  const m = document.getElementById('messages');
+  requestAnimationFrame(() => m.scrollTop = m.scrollHeight);
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString('uk-UA', {hour:'2-digit',minute:'2-digit'});
+}
+
+// ═══════════════════════════════════════════════
+// RESTART
+// ═══════════════════════════════════════════════
+function restartAll() {
+  persona = archetype = null;
+  sessionEnded = false; msgCount = fbCount = errorCount = 0;
+  transcript = []; history = []; stagesReached = new Set([0]);
+  firstReplyTime = detectedArchetype = null;
+
+  const msgs = document.getElementById('messages');
+  const typing = document.getElementById('typing');
+  while (msgs.firstChild && msgs.firstChild !== typing) msgs.removeChild(msgs.firstChild);
+
+  const inner = document.getElementById('fb-inner');
+  inner.innerHTML = `<div id="stage-bar">
+    <div class="sb-title">Етапи</div>
+    <div class="stage-steps" id="stage-steps">
+      <div class="stage-step active" data-stage="0" title="Питання"></div>
+      <div class="stage-step" data-stage="1" title="Відповідь"></div>
+      <div class="stage-step" data-stage="2" title="Енгейджмент"></div>
+      <div class="stage-step" data-stage="3" title="Емпатія"></div>
+      <div class="stage-step" data-stage="4" title="Прощання"></div>
+    </div>
+  </div>
+  <div class="fb-head">Live Feedback</div>`;
+
+  document.getElementById('fb-sidebar').classList.remove('open');
+  document.querySelectorAll('.level-card').forEach(c=>c.classList.remove('sel'));
+  const btn = document.getElementById('start-btn');
+  btn.disabled = true; btn.textContent = 'Обери рівень для старту ◆';
+  document.getElementById('msg-input').value = '';
+  document.getElementById('score-row').style.display = 'none';
+
+  document.getElementById('screen-end').classList.remove('active');
+  document.getElementById('screen-select').classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// INPUT EVENTS
+// ═══════════════════════════════════════════════
+document.getElementById('msg-input').addEventListener('keydown', e => {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+document.getElementById('msg-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+buildSelect();
+</script>
+</body>
+</html>
