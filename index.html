@@ -576,7 +576,12 @@ const STAGE_LABELS = ['Question','Response','Engagement','Empathy','Farewell'];
 async function callClaude(system, messages, maxTokens=200) {
   const resp = await fetch(API_URL, {
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':'',
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
     body: JSON.stringify({
       model: MODEL,
       max_tokens: maxTokens,
@@ -584,6 +589,11 @@ async function callClaude(system, messages, maxTokens=200) {
       messages
     })
   });
+  if (!resp.ok) {
+    const err = await resp.text();
+    console.error('API error', resp.status, err);
+    throw new Error('API ' + resp.status);
+  }
   const data = await resp.json();
   return data.content?.[0]?.text?.trim() || '';
 }
