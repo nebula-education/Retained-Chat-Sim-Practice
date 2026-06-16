@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Retained Chat Simulation · Nebula Academy</title>
+<title>AI Retained Chat Practice · Nebula</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -150,15 +150,149 @@ html,body{height:100%;background:var(--bg);font-family:Inter,system-ui,sans-seri
 .restart-btn:hover{opacity:.88;transform:translateY(-1px)}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── INTRO ── */
+#screen-intro{flex-direction:column;background:#F4F1E8;overflow-y:auto;position:relative;}
+#screen-intro::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 12%,rgba(111,112,246,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 25% 6%,rgba(111,112,246,.25) 0%,transparent 100%),
+    radial-gradient(2px 2px at 45% 18%,rgba(111,112,246,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 72% 9%,rgba(111,112,246,.2) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 88% 22%,rgba(111,112,246,.28) 0%,transparent 100%),
+    radial-gradient(1px 1px at 15% 45%,rgba(111,112,246,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 60% 38%,rgba(111,112,246,.18) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 92% 55%,rgba(111,112,246,.22) 0%,transparent 100%),
+    radial-gradient(1px 1px at 33% 70%,rgba(111,112,246,.15) 0%,transparent 100%),
+    radial-gradient(2px 2px at 78% 75%,rgba(111,112,246,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 5% 85%,rgba(111,112,246,.18) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 92%,rgba(111,112,246,.15) 0%,transparent 100%);}
+.intro-topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px;
+  padding:0 32px;height:56px;background:#F4F1E8;border-bottom:1px solid #E5E7EB;}
+.intro-topbar-logo{height:32px;object-fit:contain}
+.intro-topbar-name{font-family:Inter,sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:3px;text-transform:uppercase;color:#6F70F6;}
+.intro-body{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:48px 24px 64px;}
+.intro-title{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3rem);font-weight:400;
+  color:#151821;margin-bottom:28px;line-height:1.2;}
+.intro-desc{font-size:15px;color:#374151;line-height:1.8;margin-bottom:12px}
+.accordion{background:#fff;border:1px solid #E5E7EB;border-bottom:2px solid #6F70F6;
+  border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.accordion-header{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;cursor:pointer;user-select:none;}
+.accordion-header-text{font-size:14px;font-weight:600;color:#111827}
+.accordion-icon{font-size:18px;color:#6F70F6;transition:transform .25s;flex-shrink:0;line-height:1;}
+.accordion.open .accordion-icon{transform:rotate(45deg)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 20px;}
+.accordion.open .accordion-body{max-height:800px;padding-bottom:18px}
+.accordion-body p{font-size:13px;color:#374151;line-height:1.8;margin-bottom:10px}
+.accordion-body p:last-child{margin-bottom:0}
+.accordion-body strong{font-weight:600;color:#111827}
+.intro-quote{background:#fff;border:1px solid #E5E7EB;border-radius:12px;
+  padding:18px 22px;margin-bottom:28px;font-size:13px;color:#6B7280;font-style:italic;line-height:1.8;}
+.intro-btn{width:100%;padding:15px;border:none;border-radius:40px;
+  background:linear-gradient(135deg,#6F70F6,#9b8ffa);color:#fff;
+  font-family:Georgia,serif;font-size:1rem;font-style:italic;
+  cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 4px 20px rgba(111,112,246,.35);}
+.intro-btn:hover{opacity:.88;transform:translateY(-1px)}
+
+/* ── LOGIN ── */
+#screen-login{flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.login-wrap{position:relative;z-index:1;width:100%;max-width:400px;animation:fadeUp .5s ease both}
+.login-logo-box{display:flex;justify-content:center;margin-bottom:28px}
+.login-logo-box img{height:36px}
+.login-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:10px;display:block;text-align:center}
+.login-title{font-family:Georgia,serif;font-size:clamp(1.8rem,4vw,2.3rem);font-weight:400;color:var(--cream);margin-bottom:6px;text-align:center;line-height:1.2}
+.login-sub{font-size:12px;color:var(--g6);margin-bottom:28px;text-align:center;line-height:1.7}
+.login-field-group{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.login-field-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g6);margin-bottom:5px;display:block}
+.login-field-input{width:100%;padding:12px 16px;font-size:14px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;outline:none;font-family:Inter,sans-serif;color:var(--cream);transition:border-color .2s}
+.login-field-input:focus{border-color:var(--purple)}
+.login-field-input::placeholder{color:var(--g4);font-style:italic}
+.login-submit-btn{width:100%;padding:14px;border:none;border-radius:40px;background:linear-gradient(135deg,var(--purple),#9b8ffa);color:#fff;font-family:Georgia,serif;font-size:1rem;font-weight:400;font-style:italic;cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 4px 20px rgba(111,112,246,.35)}
+.login-submit-btn:hover{opacity:.88;transform:translateY(-1px)}
+.login-err{font-size:12px;color:var(--coral);text-align:center;margin-top:10px;min-height:16px}
 </style>
 </head>
 <body>
 
+<!-- ═══ INTRO ═══ -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-topbar">
+    <img class="intro-topbar-logo" src="data:image/png;base64,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" alt="Nebula">
+    <span class="intro-topbar-name">Nebula</span>
+  </div>
+  <div class="intro-body">
+    <h1 class="intro-title">AI Retained Chat<br>Practice Simulator</h1>
+    <p class="intro-desc">This simulator gives you a safe space to practice real retained chat conversations with AI-powered clients — before working with live users.</p>
+    <p class="intro-desc">Choose one of the five clients and start a practice session. Each client has a unique personality, emotional archetype, and communication style.</p>
+    <p class="intro-desc" style="margin-bottom:28px">We strongly recommend practicing with each client at least once — every session builds different skills and reveals new patterns in how clients behave.</p>
+
+    <div class="accordion" id="acc1">
+      <div class="accordion-header" onclick="toggleAcc('acc1')">
+        <span class="accordion-header-text">How it works</span>
+        <span class="accordion-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <p>Select any of the five clients on the next screen. Before the chat begins, you'll receive a short summary about them — their background, emotional state, and opening message. Take a moment to review it and think about your approach.</p>
+        <p>There is no time limit. A timer will track your session duration. Your goal is to create enough value, empathy, and connection that the client naturally wants to stay engaged.</p>
+        <p>Every response is an opportunity to deepen trust, uncover what the client really needs, and guide the conversation forward. When you're ready to finish, click End Session.</p>
+        <p>You can repeat any session as many times as you like — practice makes the difference.</p>
+      </div>
+    </div>
+
+    <div class="accordion" id="acc2">
+      <div class="accordion-header" onclick="toggleAcc('acc2')">
+        <span class="accordion-header-text">What you are scored on</span>
+        <span class="accordion-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <p><strong>💛 Empathy</strong><br>Do you recognize and respond to the client's emotions with care and specificity? Go beyond generic reassurance — show genuine understanding of what this specific person is feeling.</p>
+        <p><strong>🔗 Engagement</strong><br>Do you create opportunities for the conversation to grow? Thoughtful follow-up questions and exploring emotional nuances keep clients engaged far longer than direct answers.</p>
+        <p><strong>🎙️ Tone of Voice</strong><br>Does your communication feel warm, confident, and natural? Clients stay when they feel genuinely heard and supported — not lectured or rushed.</p>
+        <p><strong>⏱ Time Fillers</strong><br>Do you maintain presence without using vague filler phrases like "the universe", "energy", or "your time will come"? Purposeful, specific messages build trust; generic language breaks it.</p>
+        <p><strong>🔮 Reading Depth</strong><br>Do your insights feel thoughtful and meaningful? Go beyond the surface question to uncover the real emotional need behind it.</p>
+      </div>
+    </div>
+
+    <div class="intro-quote">
+      Practice is where confidence is built. Try every client, experiment with different approaches, and remember — each session makes you better. 🌟
+    </div>
+
+    <button class="intro-btn" onclick="goToIntroNext()">Choose a Client &rarr;</button>
+  </div>
+</div>
+
+
+<!-- ═══ LOGIN ═══ -->
+<div class="screen star-bg" id="screen-login">
+  <div class="login-wrap">
+    <div class="login-logo-box">
+      <img src="data:image/png;base64,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" alt="Nebula">
+    </div>
+    <span class="login-eyebrow">Nebula &middot; Practice Simulator</span>
+    <h1 class="login-title">Sign in to Practice</h1>
+    <p class="login-sub">Enter your details below. Your results will be saved automatically after each session.</p>
+    <div class="login-field-group">
+      <div>
+        <label class="login-field-label">Your Name</label>
+        <input class="login-field-input" id="login-name" type="text" placeholder="e.g. Sarah Johnson" autocomplete="off">
+      </div>
+      <div>
+        <label class="login-field-label">Your Email</label>
+        <input class="login-field-input" id="login-email" type="email" placeholder="e.g. sarah@example.com" autocomplete="off">
+      </div>
+    </div>
+    <button class="login-submit-btn" onclick="doLogin()">Continue &rarr;</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
 <!-- SELECT -->
-<div class="screen star-bg active" id="screen-select">
+<div class="screen star-bg" id="screen-select">
   <div class="select-wrap">
     <div class="select-header">
-      <span class="select-eyebrow">Nebula Academy &middot; AI Retained Chat Simulation</span>
+      <span class="select-eyebrow">Practice Simulator &middot; Choose Your Client</span>
       <img class="nlogo-icon" src="data:image/png;base64,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" alt="Nebula">
     </div>
     <h1 class="select-title">Choose Your Client</h1>
@@ -697,6 +831,35 @@ function scrollBottom(){var m=document.getElementById('messages');requestAnimati
 function getTime(){return new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
 document.getElementById('msg-input').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
 document.getElementById('msg-input').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';});
+
+
+function toggleAcc(id){document.getElementById(id).classList.toggle('open');}
+function goToSelect(){switchScreen('screen-intro','screen-select');}
+
+
+var advisorName = '', advisorEmail = '';
+
+function goToIntroNext(){
+  switchScreen('screen-intro','screen-login');
+}
+
+function doLogin(){
+  var n = document.getElementById('login-name').value.trim();
+  var e = document.getElementById('login-email').value.trim();
+  var err = document.getElementById('login-err');
+  if(!n){ err.textContent = 'Please enter your name.'; return; }
+  if(!e || !e.includes('@')){ err.textContent = 'Please enter a valid email.'; return; }
+  advisorName = n; advisorEmail = e; err.textContent = '';
+  switchScreen('screen-login','screen-select');
+}
+
+
+document.getElementById('login-name').addEventListener('keydown', function(e){
+  if(e.key==='Enter') document.getElementById('login-email').focus();
+});
+document.getElementById('login-email').addEventListener('keydown', function(e){
+  if(e.key==='Enter') doLogin();
+});
 
 </script>
 </body>
